@@ -1,0 +1,4 @@
+=== Web Vulnerability Scan Report ===
+Target: https://tesla.com
+
+No vulnerabilities found.
