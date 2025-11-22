@@ -1,54 +1,79 @@
 
+
 import requests
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 from payloads import SQLI_PAYLOADS, XSS_PAYLOADS, LFI_PAYLOADS
+from severity import get_severity
+from colors import severity_color
+
 
 class Scanner:
     def __init__(self):
-        self.vulnerabilities = []
+        pass
 
     def scan_url(self, url):
         parsed = urlparse(url)
-        params = {k: v for k, v in [param.split('=') for param in parsed.query.split('&')] if '=' in parsed.query} \
-            if parsed.query else None
+        params = parse_qs(parsed.query)
 
         if not params:
-            return
+            return []
 
         print(f"[+] Scanning {url}")
 
+        findings = []
+
         if self.test_sqli(url, params):
-            self.vulnerabilities.append((url, "SQL Injection"))
+            findings.append("SQL Injection")
+            self.print_finding(url, "SQL Injection")
 
         if self.test_xss(url, params):
-            self.vulnerabilities.append((url, "Cross Site Scripting (XSS)"))
+            findings.append("Cross-Site Scripting (XSS)")
+            self.print_finding(url, "Cross-Site Scripting (XSS)")
 
         if self.test_lfi(url, params):
-            self.vulnerabilities.append((url, "Local File Inclusion (LFI)"))
+            findings.append("Local File Inclusion (LFI)")
+            self.print_finding(url, "Local File Inclusion (LFI)")
+
+        return findings
+
+
+    # ------------------------- TEST FUNCTIONS -------------------------
 
     def test_sqli(self, url, params):
         for payload in SQLI_PAYLOADS:
             data = {k: payload for k in params.keys()}
             r = requests.get(url.split('?')[0], params=data)
+
             if any(x in r.text.lower() for x in ["sql", "database", "syntax error"]):
-                print(f"[!] SQL Injection detected at {url}")
                 return True
         return False
+
 
     def test_xss(self, url, params):
         for payload in XSS_PAYLOADS:
             data = {k: payload for k in params.keys()}
             r = requests.get(url.split('?')[0], params=data)
+
             if payload in r.text:
-                print(f"[!] XSS detected at {url}")
                 return True
         return False
+
 
     def test_lfi(self, url, params):
         for payload in LFI_PAYLOADS:
             data = {k: payload for k in params.keys()}
             r = requests.get(url.split('?')[0], params=data)
+
             if "root:" in r.text or "[extensions]" in r.text:
-                print(f"[!] Local File Inclusion detected at {url}")
                 return True
         return False
+
+
+    # ------------------------- PRINTING -------------------------
+
+    def print_finding(self, url, vuln):
+        severity = get_severity(vuln)
+        sev_colored = severity_color(severity)
+        print(f"[FOUND] {vuln} ({sev_colored}) at {url}")
+
+    
