@@ -1,12 +1,30 @@
+
 from crawler import Crawler
 from WVScanner import Scanner
 from WVReport import Reporter
 
+# ==========================================
+#                ADVANCED BANNER
+# ==========================================
+BANNER = r"""
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃         WEB VULNERABILITY SCANNER            ┃
+┃        (Passive & Non-Intrusive Mode)        ┃
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃  [•] Analyzer: HTTP Response Heuristics      ┃
+┃  [•] Severity Levels: LOW / MEDIUM / HIGH    ┃
+┃  [•] Target: URL Structure & Parameter Logic ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+"""
+# ==========================================
+
 
 def run_scanner(target):
-    vulnerabilities = [
-        # example: ("http://site.com/page?id=1", "SQL Injection")
-    ]
+    print(BANNER)  # show banner
+    print(f"[*] Starting scan on: {target}")
+
+# example: ("http://site.com/page?id=1", "SQL Injection")
+
 
     print("[*] Starting scan...")
     crawler = Crawler(target)
