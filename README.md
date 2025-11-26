@@ -29,6 +29,8 @@ cd WVS-scanner
 
 pip install -r requirements.txt
 
+cd  WVS-Scanner
+
 cd WVS-Src
 
 python WVS-Main.py
