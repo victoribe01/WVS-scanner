@@ -37,6 +37,7 @@ def run_scanner(target, mode="passive"):
         links = [target]
 
     for link in links:
+
         print(Fore.YELLOW + f"[~] Scanning: {link}")
         try:
             findings = scanner.scan(link, mode=mode)
@@ -53,3 +54,8 @@ def run_scanner(target, mode="passive"):
     reporter = Reporter(all_findings, target)
     reporter.generate_report(txtfile="scan_report.txt", jsonfile="scan_report.json")
     print(Fore.GREEN + "[✓] Scan finished (limited active). Remember: no exploit payloads were used.")
+
+if __name__ == "__main__":
+    target = input("Enter the target URL (include scheme, e.g. https://example.com): ").strip()
+    mode = input("Scan mode (passive/active/both): ").strip().lower()
+    run_scanner(target, mode=mode)
